@@ -1,0 +1,37 @@
+{% extends "layout_autenticado.html" %}
+{% block content%}
+  <head>
+    <link rel="stylesheet" href="{{url_for('static',filename='CSS/menu_seleccion.css')}}"/>
+
+  </head>
+
+  <h3> Bienvenida especial para {{session["name"]}} a su sesion en TEE-SHOT como Administrador del Club.</h3>
+<!--  <h3>Gracias por autenticarse</h3>-->
+
+<!--<div class="">
+
+
+    <form class="" action="{{url_for('formturnos')}}" method="post">
+      <input type="submit" name="abrir_agenda" value="CREAR Agenda">
+    </form>
+
+    <form class="" action="{{url_for('formturnos')}}" method="post">
+      <input type="submit" name="ver_agenda" value="REVISAR Agenda">
+    </form>
+
+    <form class="" action="{{url_for('formturnos')}}" method="post">
+      <input type="submit" name="autorizar_jugador" value="AUTORIZAR Jugador">
+    </form>
+
+  </div>-->
+
+  <div class="botones">
+    <li><a href="{{url_for('formturnos')}}">CREAR Agenda</a></li>
+    <li><a href="{{url_for('vaparameters')}}">REVISAR Agenda</a></li>
+    <li><a href="{{url_for('formturnos')}}">GESTIONAR Jugadores</a></li>
+  </div>
+  <br><br>
+  <li class="enlace"><a href="{{url_for('logout')}}">Cerrar Sesión</a></li>
+  <br>
+
+{% endblock %}

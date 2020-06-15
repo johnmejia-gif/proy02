@@ -1,0 +1,47 @@
+{% extends "layout_autenticado.html" %}
+{% block content%}
+
+<head>
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/formularios.css')}}"/>
+</head>
+
+
+<!--<p>{{jugadores[0]}}</p>-->
+
+<!--<p>fecha=fecha,campo=campo,jugadores=jugadores,ljugadores=ljugadores)</p>-->
+
+<p>Pra el día: {{fecha}}, en el club:{{club}}, en: {{campo}}, para los usuarios: {{jugadores}} </p>
+<br>
+<p>Por favor seleccione el turno deseado:</p>
+<!--<p>{{progclubcampo}}</p>-->
+<form class="" action="{{url_for('brabagenjugador')}}" method="post">
+
+  <input type="hidden" name="jugadores" value="{{jugadores}}">
+  <input type="hidden" name="ljugadores" value="{{ljugadores}}">
+  <input type="hidden" name="club" value="{{club}}">
+  <input type="hidden" name="fecha" value="{{fecha}}">
+  <input type="hidden" name="campo" value="{{campo}}">
+
+{% for linea in progclubcampo%}
+  {% if linea[8] >= ljugadores %}
+    <input type="radio" name="tur" value="{{linea[3]}}" class="turn">Turno: {{linea[3]}}____ hora: {{linea[2]}}_____Cupos:{{linea[8]}}___ DISPONIBLE<br>
+  {% else %}
+    <label for=""class="nodispo">_______Turno: {{linea[3]}}____ hora: {{linea[2]}}_____Cupos:{{linea[8]}}___ NO Disponible</label> <br>
+  {% endif %}
+{% endfor %}
+
+    <input type="submit" name="grabar" value="GRABAR">
+</form>
+
+<!--  <form class="" action="{{url_for('inicioagendajugador')}}" method="post">
+    <input type="submit" name="logout" value="VOLVER">
+  </form>
+  <form class="" action="{{url_for('logout')}}" method="post">
+    <input type="submit" name="logout" value="TERMINAR_SESIÓN">
+  </form> -->
+
+  <br>
+  <li class="enlace"><a href="{{url_for('inicioagendajugador')}}">Volver</a></li>
+  <li class="enlace"><a href="{{url_for('logout')}}">Cerrar Sesión</a></li>
+
+{% endblock %}

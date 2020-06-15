@@ -1,0 +1,32 @@
+{% extends "layout_autenticado.html" %}
+{% block content%}
+
+<p>Confirmado su turno para:</p>
+<p>El día {{fecha}}</p>
+<p>En {{campo}}</p>
+{% for elemento in filaagenda%}
+  <p>Hora: {{elemento[2]}}</p>
+{% endfor %}
+
+<!--<p>fecha=fecha,campo=campo,jugadores=jugadores,ljugadores=ljugadores)</p>
+<p>{{fecha}}, {{campo}}, {{jugadores}} {{ljugadores}} {{consulta1}}</p>
+  <p> {{turno_sel}}</p>
+  <p>{{filaagenda}}</p>-->
+
+<form class="" action="{{url_for('brabagenjugador')}}" method="post">
+  <input type="hidden" name="jugadores" value="{{jugadores}}">
+  <input type="hidden" name="ljugadores" value="{{ljugadores}}">
+  <input type="hidden" name="club" value="{{club}}">
+  <input type="hidden" name="fecha" value="{{fecha}}">
+
+</form>
+
+  <form class="" action="{{url_for('inicioagendajugador')}}" method="post">
+    <input type="submit" name="logout" value="VOLVER">
+  </form>
+  <br>
+
+<li class="enlace"><a href="{{url_for('logout')}}">Cerrar Sesión</a></li>
+
+
+{% endblock %}

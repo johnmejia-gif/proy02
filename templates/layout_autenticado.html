@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Mi primer sitio web-python</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='CSS/ppal.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='CSS/fuentes.css')}}">
+  </head>
+  <body>
+      <header>
+
+        <nav>
+          <ul class="menu">
+            <li>  <img src="{{url_for('static',filename='IMAGENES/logo_ts.ico')}}" width="70" alt="Logotipo"></li>
+            <li><a href="/">Home</a></li>
+          </ul>
+        </nav>
+      </header>
+      {% block content %}
+      {% endblock %}
+
+
+
+
+
+
+
+
+  </body>
+</html>

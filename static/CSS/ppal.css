@@ -1,0 +1,126 @@
+*{
+  margin: 0;padding: 0;
+  font-family: Roboto-Light;
+
+}
+body{
+  text-align: justify;
+
+}
+h2{
+  padding: 20px;
+  font-size: 35px;
+  color:#065F73;
+}
+h3{
+  padding: 20px;
+  font-size: 27px;
+  color:#065F73;
+}
+h4{
+  padding: 20px;
+  font-size: 20px;
+  color:#065F73;
+}
+
+P{
+  font-size: 20px;
+  padding-left: 15px;
+}
+.menu {
+  width: 100vw;
+  background: #fff;
+  list-style: none;
+  margin:0;
+  padding:0;
+
+
+}
+.menu li{
+  width: 5%;
+  display: inline-block;
+  text-align: center;
+
+
+}
+.menu li a{
+  padding:10px 30px;
+  display: inline-block;
+  color:#1F8DA6;
+  list-style: none;
+}
+.menu li a:hover{
+  background: #fb8c00;
+  color:#000;
+}
+body{
+  background:#fff;
+}
+
+.portada{
+  width: 100%; max-width: 1200px;
+  height: auto;
+}
+}
+footer p{
+  width: 100vw;
+  background: #065F73;
+  color: #fff;
+  margin:0px;
+  padding:5px;
+  box-sizing: border-box;
+  border:2px solid #1668C4;
+}
+.portada {
+  margin-left: 0%;
+}
+.wrapper{
+  width: 100vw;
+  height: auto;
+}
+.form05{
+  background:#1F8DA6;
+  width: 100%;
+}
+.form05 h3{
+  color: white;
+}
+.contenedor05{
+  border:1px solid #fff;
+  width: 90%;
+  height: 300px;
+  overflow: auto;
+  color: #1668C4;
+}
+
+.contenedor05 tabla{
+  margin: 10px;
+  width: 90%;
+}
+
+.ttabla td{
+  background: yellow;
+  color: #000;
+}
+.filas_nd{
+  background: pink;
+}
+
+.filas_sd{
+  background: #98fb98;
+}
+.tabla_agenda td{
+
+  border:1px solid #1668C4;
+  padding: 10px;
+  width: 15%
+}
+.boton_radio{
+  width: 10%;
+}
+.prueba{
+  background: pink;
+  width: 70%;
+  height: 50px;
+  overflow:auto;
+}
