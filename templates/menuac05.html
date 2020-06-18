@@ -12,6 +12,7 @@
   <p>campo: {{campo}}</p>
 
   <p>fecha: {{fecha}}</p>
+
   <!--<p>progclubcampo: {{progclubcampo}}</p>-->
 
 <!--  <div class="prueba">
@@ -62,14 +63,14 @@
         </table>
       </div>
 
-      <h2>Para realizar cambios en la agenda seleccione:</h2>
+      <h2>Para realizar cambios en la agenda seleccione en cual turno:</h2>
 
       <input type="hidden" name="fecha" value="{{fecha}}">
       <input type="hidden" name="campo" value="{{campo}}">
 
       <label for="usuario">TURNO</label>
-      <select name="turno">
-        <option value="" selected></option>
+      <select name="turno" required>
+        <option value="" ></option>
         {% for linea in progclubcampo %}
         <option>{{linea[3]}}</option>
         {% endfor %}

@@ -122,3 +122,8 @@ input[type="submit"]:active{
 .enlace{
   list-style: none;
 }
+
+.alerta{
+  background: orange;
+
+}

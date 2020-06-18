@@ -6,6 +6,10 @@ import os
 from datetime import datetime, date, time, timedelta
 from flask_mail import Mail
 from flask_mail import Message
+from random import randint, uniform,random,randrange,choice
+import random
+import string
+from flask import flash
 
 class Archivo:
     def __init__(self):
@@ -15,6 +19,11 @@ class Archivo:
         archivo.close()
     def escribirArchivo(self):
         archivo=open('jugadores', 'a')
+        for elemento in self.lista:
+            archivo.write(elemento+"\n")
+        archivo.close()
+    def cambiartodoArchivo(self):
+        archivo=open('jugadores','w')
         for elemento in self.lista:
             archivo.write(elemento+"\n")
         archivo.close()
@@ -33,10 +42,6 @@ class Archivo:
     def imprimirContacto(self):
         for elemento in self.lista:
             arreglo=elemento.split('$*!$')
-        #    print('************************')
-        #    print('Nombre: '+ arreglo[0])
-        #    print('Telefono: ' + arreglo [1])
-        #    print('************************')
     def buscarContacto(self,co):
         encontrado='no'
         for elemento in self.lista:
@@ -44,35 +49,43 @@ class Archivo:
             if co == arreglo[0]:
                 encontrado='si'
         return encontrado
-
+    def datosContacto(self,co):
+        datusuario=[]
+        for elemento in self.lista:
+            arreglo=elemento.split('$*!$')
+            if co == arreglo[0]:
+                datusuario=arreglo
+        return datusuario
     def datoposContacto(self,co,pos):
         for elemento in self.lista:
             arreglo=elemento.split('$*!$')
             pos=int(pos)
             if co == arreglo[0]:
-                print('***************')
-                print(arreglo[pos])
-                print(co)
-                print('***************')
                 return arreglo[pos]
     def claveContacto(self,co):
         for elemento in self.lista:
             arreglo=elemento.split('$*!$')
             if co == arreglo[0]:
-                print('***************')
-                print(arreglo[3])
-                print(co)
-                print('***************')
                 return arreglo[3]
     def nombreContacto(self,co):
         for elemento in self.lista:
             arreglo=elemento.split('$*!$')
             if co == arreglo[0]:
-                print('***************')
-                print(arreglo[1])
-                print(co)
-                print('***************')
                 return arreglo[1]
+    def cambiodatoArchvio(self,co,pos,valor):#cambia el valor deseado en la possición especificada
+        pos=int(pos)
+        valor=str(valor)
+        for elemento in self.lista:
+            arreglo=elemento.split('$*!$')
+            if co == arreglo[0]:
+                arreglo[pos]=valor
+                print('****fila a eliminar*******: ' +elemento)
+                self.lista.remove(elemento)
+                nuevoarreglo=arreglo[0]
+                largo=len(arreglo)
+                for i in range(1,largo):
+                    nuevoarreglo=nuevoarreglo+'$*!$'+arreglo[i]
+        self.lista.append(nuevoarreglo)
 
 class Campos:
     def __init__(self):
@@ -201,6 +214,101 @@ class Agenda:
                 if filaagenda[3]==pos3:
                     lineaturno.append(filaagenda)
         return lineaturno
+    def turjugAgenda(self,usuario,fecha): #Devuelve una lista con los turnos del jugador en la fecha
+        turnosjugador=[]
+        fecha=str(fecha)
+        for linea in self.lista:
+            existe='no'
+            filaagenda=linea.split('$*!$')
+            clubcamfe=filaagenda[0].split('&/&')
+            if clubcamfe[2] == fecha:
+                for i in range(4,8):
+                    if filaagenda[i]==usuario:
+                        existe='si'
+            if existe=='si':
+                turnosjugador.append(filaagenda)
+        return turnosjugador
+
+class Tarjetas:
+    def __init__(self):
+        self.lista=[]
+    def iniciarTarjetas(self):
+        archivo=open('tarjetas','a')
+        archivo.close()
+    def leerTarjetas(self):
+        archivo=open('tarjetas','r')
+        linea=archivo.readline()
+        if linea:
+            while linea:
+                if linea[-1] == '\n':
+                    linea = linea[:-1]
+                self.lista.append(linea)
+                linea=archivo.readline()
+    def escribirTarjetas(self):#para adicionar una tarjeta en el archivo de tarjetas
+        archivo=open('tarjetas','a')
+        for elemento in self.lista:
+            archivo.write(elemento+"\n")
+        archivo.close()
+    def grabarTarjetas(self):#reescribe el archivo tarjetas
+        archivo=open('tarjetas','w')
+        for elemento in self.lista:
+            archivo.write(elemento+"\n")
+        archivo.close()
+    def buscarTarjetas(self,fec,co,hora):
+        fec=str(fec)
+        encontrado='no'
+        for elemento in self.lista:
+            arreglo=elemento.split('$')
+            if fec==arreglo[0]:
+                if co==arreglo[1]:
+                    if hora==arreglo[24]:
+                        encontrado='si'
+        return encontrado
+    def creaTarjetas(self,fec,co,mc,cam,score,hora):
+        fec=str(fec)
+        pos=[fec,co,mc,cam]
+        for i in range(0,18):
+            pos.append(score[i])
+        pos.append('si')
+        pos.append('no')
+        registro=pos[0]
+        for j in range(1,24):
+            registro=registro+'$'+pos[j]
+        registro=registro+'$'+hora
+        self.lista.append(registro)
+    def marcadorTarjetas(self,mc):#deuvelve respuesta para saber [está asignado como marcador, lista de asignaciones]
+        asignadomarcador='no'
+        tars=[]
+        fec=date.today()
+        fec=str(fec)
+        for elemento in self.lista:
+            arreglo=elemento.split('$')
+            if fec==arreglo[0]:
+                if mc==arreglo[2]:
+                    asignadomarcador='si'
+                    tars.append(arreglo)
+        respuesta=[asignadomarcador,tars]
+        return respuesta
+    def avalarTarjetas(self,fec,co,hora):
+        for elemento in self.lista:
+            arreglo=elemento.split('$')
+            if fec==arreglo[0]:
+                if co==arreglo[1]:
+                    if hora==arreglo[24]:
+                        arreglo[23]='si'
+                        self.lista.remove(elemento)
+                        nuevatarjeta=arreglo[0]
+                        for i in range(1,25):
+                            nuevatarjeta=nuevatarjeta+'$'+arreglo[i]
+        self.lista.append(nuevatarjeta)
+    def verTarjetas(self,fec,cam):#devuelve una lista con las tarjetas del clbu en la fecha escogida
+        tarjetas=[]
+        for elemento in self.lista:
+            arreglo=elemento.split('$')
+            if fec==arreglo[0]:
+                if cam==arreglo[3]:
+                    tarjetas.append(arreglo)
+        return tarjetas
 
 def TotalTurnos(hi,mi,fm,hf,mf,txr,desa):#devuelve una lista con [la cantidad de turnos antes del cruce, turnos en total del día]
     hi=int(hi)
@@ -300,6 +408,19 @@ def InsertaCruces(turnossexa,tur): #inserta los cruces para mostrar los horarios
         mostrarturnos.append(mensaje)
         return mostrarturnos
 
+def GeneraClave():
+    clavej='asdfghjklqwertyuiopzxcvbnm1203456789AZQWSXCDERFVBGTYHNMJUIKLOP'
+    c1=random.choice(clavej)
+    c2=random.choice(clavej)
+    c3=random.choice(clavej)
+    c4=random.choice(clavej)
+    c5=random.choice(clavej)
+    c6=random.choice(clavej)
+    c7=random.choice(clavej)
+    c8=random.choice(clavej)
+    contrasegna=c1+c2+c3+c4+c5+c6+c7+c8
+    return contrasegna#Genera clave aleatoria de 8 dígitos
+
 app = Flask(__name__) #esto crea un objeto que lo llamamos app
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -317,11 +438,16 @@ contrasenas=['admin']
 def home():
     return render_template('autenticacion.html')
 
-@app.route('/about') #se usara para la seccion de olvido su contraseña
-def about():
-    return render_template('EJERCICIO_FORMULARIOS.html')
+@app.route('/logout', methods=["GET","POST"])
+def logout():
+    flask.session["logged_in"] = False
+    flask.session["name"]=''
+    flask.session["username"]=''
+    flask.session["course"]=''
+    flask.session["tusu"]=''
+    return flask.redirect(flask.url_for("home"))
 
-@app.route('/autenticacion', methods=["POST","GET"])   #Valida los datos que viene del formulario de autenticacion en 'inicio'
+@app.route('/autentication', methods=["POST","GET"])   #Valida los datos que viene del formulario de autenticacion en 'inicio'
 def autenticar():
     autenticado=False
     if (flask.request.method == "POST"):
@@ -338,16 +464,19 @@ def autenticar():
                 pos=1
                 flask.session["logged_in"]=True
                 flask.session["name"]=archivo.datoposContacto(co=usuario,pos=pos)
+                pos=2
+                flask.session["surname"]=archivo.datoposContacto(co=usuario,pos=pos)
                 flask.session["username"]=usuario
                 pos=5
                 flask.session["course"]=archivo.datoposContacto(co=usuario,pos=pos)
                 pos=10
-                tusu=archivo.datoposContacto(co=usuario,pos=pos) #lee el tipo de usuario
-                if tusu=='1':
+                flask.session["tusu"]=archivo.datoposContacto(co=usuario,pos=pos)
+                tusuario=archivo.datoposContacto(co=usuario,pos=pos) #lee el tipo de usuario
+                if tusuario=='1':
                     return flask.render_template("res_pos_jug_autentic.html") #direcciona a formulario positivo de autenticacion de jugador
-                elif tusu=='2':
+                elif tusuario=='2':
                     return flask.render_template("res_pos_adclu_autentic.html") # direcciona a formulario positivo de autenticacion administrador de club
-                elif tusu=='0':
+                elif tusuario=='0':
                     return flask.render_template("res_pos_admin.html")
                     tusu = tusu #************construir el menu de administrador
             else:
@@ -357,15 +486,48 @@ def autenticar():
     else:
         return render_template("autenticacion.html")
 
+@app.route('/administrator_club', methods=["GET","POST"])
+def inicioadclub(): #procedimiento para direccionar al menu inicial del administrador del club
+    return render_template("res_pos_adclu_autentic.html")
+
+@app.route('/players', methods=["GET","POST"])
+def iniciojugadores():#procedimiento para direccionar al menu inicial del jugador
+    return render_template("res_pos_jug_autentic.html")
+
+@app.route('/generate_new_password', methods=["GET", "POST"]) #se usara para la seccion de olvido su contraseña
+def olvidocontrasegna():
+    return render_template('olvido_contra.html')
+
+@app.route('/generate_new_password/assing', methods=["GET", "POST"])
+def procolvidocontrasegna():
+    usuario=flask.request.form["usuario"]
+    archivo=Archivo()
+    archivo.leerBase()
+    encontrado=archivo.buscarContacto(co=usuario)
+    mensajerapido=''
+    if encontrado=='si':
+        pos=3
+        contra1=GeneraClave()
+        archivo.cambiodatoArchvio(co=usuario,pos=pos,valor=contra1)
+        archivo.cambiartodoArchivo()
+    else:
+        mensajerapido='Usuario no registrado en TEE-SHOT'
+    if mensajerapido=='':
+        flash('Hemos enviado una nueva contraseña a su correo electrónico.')
+        msg = Message('Reestablecimiento de contraseña en TEE-SHOT', sender = app.config['MAIL_USERNAME'], recipients=[usuario])
+        msg.html = render_template('mail03.html',contrasegna=contra1)
+        mail.send(msg)
+        return render_template('olvido_contra.html')
+    else:
+        flash(mensajerapido)
+        return render_template('olvido_contra.html')
+
 @app.route('/registration_TEE_SHOT', methods=["GET","POST"]) # Crear usuario como jugador
 def registro():
     campos=Campos()
     campos.leerCampos()
     lista_campos=campos.devolverCampos()
     largo=len(lista_campos)
-    print(len(lista_campos))
-    for campo in lista_campos:
-        print(campo)
     return render_template('registro.html',campos=lista_campos, largo=largo) # Direcciona al formulario de registro de usuario jugador
 
 @app.route('/registration_TEE_SHOT/result_registration', methods=["POST"])
@@ -375,8 +537,8 @@ def terminaregistro():
         usuario = flask.request.form["usuario"]
         nombre = flask.request.form["nombre"]
         apellido = flask.request.form["apellido"]
-        contrasena1 = flask.request.form["contrasena1"]
-        contrasena2 = flask.request.form["contrasena2"]
+#        contrasena1 = flask.request.form["contrasena1"]
+#        contrasena2 = flask.request.form["contrasena2"]
         identificacion = flask.request.form["identificacion"]
         club = flask.request.form["club"]
         indice_fedegolf = flask.request.form["indice_fedegolf"]
@@ -385,48 +547,195 @@ def terminaregistro():
         tipo_usuario='1'
         fecha=date.today()
         fecha=str(fecha)
-        if contrasena1 == contrasena2:
-            archivo=Archivo()
-            archivo.iniciarArchivo()
-            archivo.leerBase()
-            encontrado=archivo.buscarContacto(co=usuario)
-            if encontrado=='si':
-                return render_template('error_registro.html', error='****ERROR****    Usuario Ya Registrado en TEE-SHOT')
-            else:
-                archivo2=Archivo()
-                archivo2.crearContacto(co=usuario,no=nombre,ap=apellido,cn=contrasena1,id=identificacion,cl=club,ac=aval_club,cf=cod_fedegolf,ind=indice_fedegolf,fr=fecha,ty=tipo_usuario)
-                archivo2.imprimirContacto()
-                archivo2.escribirArchivo()
-                msg = Message('Gracias por inscribirse en TEE-SHOT', sender = app.config['MAIL_USERNAME'], recipients=[usuario])
-                msg.html = render_template('mail01.html', nombre=nombre)
-                mail.send(msg)
-                return render_template('result_registro.html', mensaje='Felicitaciones. Su registro en TEE-SHOT ha sido exitoso')
-
+        contrasegna=GeneraClave()
+        archivo=Archivo()
+        archivo.iniciarArchivo()
+        archivo.leerBase()
+        encontrado=archivo.buscarContacto(co=usuario)
+        if encontrado=='si':
+            return render_template('error_registro.html', error='****ERROR****    Usuario Ya Registrado en TEE-SHOT')
         else:
-            return render_template('error_registro.html', error='La contraseña no coincide')
+            archivo2=Archivo()
+            archivo2.crearContacto(co=usuario,no=nombre,ap=apellido,cn=contrasegna,id=identificacion,cl=club,ac=aval_club,cf=cod_fedegolf,ind=indice_fedegolf,fr=fecha,ty=tipo_usuario)
+            archivo2.imprimirContacto()
+            archivo2.escribirArchivo()
+            msg = Message('Gracias por inscribirse en TEE-SHOT', sender = app.config['MAIL_USERNAME'], recipients=[usuario])
+            msg.html = render_template('mail01.html', nombre=nombre,usuario=usuario, contrasegna=contrasegna)
+            mail.send(msg)
+            return render_template('result_registro.html', mensaje='Felicitaciones. Su registro en TEE-SHOT ha sido exitoso')
     else:
         return render_template("autenticacion.html")
 
-@app.route('/logout', methods=["GET","POST"])
-def logout():
-    flask.session["logged_in"] = False
-    flask.session["name"]=''
-    flask.session["username"]=''
-    return flask.redirect(flask.url_for("home"))
+@app.route('/autentication/user_profile', methods=["GET","POST"])
+def perfilusuario():
+    archivo=Archivo()
+    usuario=flask.session["username"]
+    archivo.leerBase()
+    datusuario=archivo.datosContacto(co=usuario)
+    return render_template('cambioperfil.html',datusuario=datusuario)
+
+@app.route('/autentication/change_password', methods=["GET","POST"])
+def cambiocontrasegna():
+    return render_template('cambiopasword.html')
+
+@app.route('/autentication/change_password/realize', methods=["GET","POST"])
+def realizacambiocontrasegna():
+    contra0=flask.request.form["contra0"]
+    contra1=flask.request.form["contra1"]
+    contra2=flask.request.form["contra2"]
+    usuario=flask.session["username"]
+    print(contra0)
+    print(contra1)
+    print(contra2)
+    mensajeerror=''
+    if contra1 == contra2:
+        archivo=Archivo()
+        archivo.leerBase()
+        pos=3
+        contrasegna=archivo.datoposContacto(co=usuario,pos=pos)
+        if contra0 == contrasegna:
+            archivo.cambiodatoArchvio(co=usuario,pos=pos,valor=contra1)
+            archivo.cambiartodoArchivo()
+        else:
+            mensajeerror='Su contraseña actual está errada'
+    else:
+        mensajeerror='Las contraseñas son diferentes'
+    if mensajeerror =='':
+        flash('Contraseña cambiada de manera Exitosa')
+        msg = Message('Cambio de contraseña en TEE-SHOT', sender = app.config['MAIL_USERNAME'], recipients=[usuario])
+        msg.html = render_template('mail02.html')
+        mail.send(msg)
+        return render_template('cambiopasword.html')
+    else:
+        flash(mensajeerror)
+        return render_template('cambiopasword.html')
+
+@app.route('/players/cards', methods=["GET","POST"])
+def tarjetasjugador():#juador define quien va a ser su marcador en la tajeta
+    archivo1=Archivo()
+    archivo2=Agenda()
+    archivo2.leerAgenda()
+    fecha=date.today()
+    usuario=flask.session["username"]
+    turnosjugador=archivo2.turjugAgenda(usuario=usuario,fecha=fecha)
+    lturnosjugador=len(turnosjugador)
+    clubjugado=[]
+    colegas=[]
+    if lturnosjugador !=0:
+        clubjugado=[]
+        colegas=[]
+        horas=[]
+        for turno in turnosjugador:
+            clubcamfe=turno[0].split('&/&')
+            clubjugado.append(clubcamfe[0])
+            hora=turno[2]
+            horas.append(hora)
+            for i in range (4,8):
+                if turno[i]!=usuario:
+                    colegas.append(turno[i])
+        return render_template('menuju05.html',clubjugado=clubjugado,colegas=colegas,turnosjugador=turnosjugador,fecha=fecha,horas=horas)
+    else:
+        mensajerapido='*** Usted no tiene agendado juego para hoy, debe estar agendado para entregar tarjeta de juego ***'
+        flash(mensajerapido)
+        return render_template('res_pos_jug_autentic.html')
+
+@app.route('/players/cards/send', methods=["GET","POST"])
+def tarjetasjugadorsend():#Jogador llene los escores de la tajeta y la envíe para qu ela firme el marcador
+    if(flask.request.method=="POST"):
+        club=flask.request.form["club"]
+        marcador=flask.request.form["marcador"]
+        hora=flask.request.form["hora"]
+        co=flask.session["username"]
+        hoy=date.today()
+        archivo=Tarjetas()
+        archivo.iniciarTarjetas()
+        archivo.leerTarjetas()
+        encontrado=archivo.buscarTarjetas(fec=hoy,co=co,hora=hora)
+        if encontrado=='no':
+            return render_template('menuju06.html',club=club,marcador=marcador,hoy=hoy,hora=hora)
+        else:
+            flash('Ya tiene una tarjeta registrada')
+            return render_template('res_pos_jug_autentic.html')
+    else:
+        return render_template("autenticacion.html")
+
+@app.route('/players/cards/send/record', methods=["GET","POST"])
+def rectarjetajugador():#graba en la base de datos la tarjeta envida por el jugador
+    if(flask.request.method=="POST"):
+        fec=date.today()
+        co=flask.session["username"]
+        mc=flask.request.form["marcador"]
+        cam=flask.request.form["club"]
+        hora=flask.request.form["hora"]
+        score=[]
+        for i in range(1,19):
+            adicion=str(i)
+            hoyo='hoyo'+adicion
+            golpes=flask.request.form[hoyo]
+            score.append(golpes)
+        archivo=Tarjetas()
+        archivo.iniciarTarjetas()
+        archivo.leerTarjetas()
+        archivo2=Tarjetas()
+        archivo2.creaTarjetas(fec=fec,co=co,mc=mc,cam=cam,score=score,hora=hora)
+        archivo2.escribirTarjetas()
+        flash('Tarjeta enviada para firma del marcador')
+        return render_template("res_pos_jug_autentic.html")
+    else:
+        return render_template("autenticacion.html")
+
+@app.route('/players/cards/send/record/validate', methods=["GET","POST"])
+def tarjetascolega():
+    mc=flask.session["username"]
+    archivo=Tarjetas()
+    archivo.leerTarjetas()
+    respuesta=archivo.marcadorTarjetas(mc=mc)
+    asignadomarcador=respuesta[0]
+
+    if asignadomarcador=='si':
+        tars0=respuesta[1]
+        tars=[]
+        for tarjeta in tars0:
+            if tarjeta[23]=='no':
+                tars.append(tarjeta)
+                mensaje=''
+        if tars==[]:
+            mensaje='No tiene tarjetas pendientes por firmar como marcador'
+    else:
+        mensaje='No tiene tarjetas pendientes por firmar como marcador'
+    if mensaje=='':
+        return render_template('menuju07.html',respuesta=respuesta,tars=tars)
+    else:
+        flash(mensaje)
+        return render_template('res_pos_jug_autentic.html')
+
+@app.route('/players/cards/send/record/validate/show', methods=["GET","POST"])
+def tarjetafirmada():
+    mc=flask.session["username"]
+    fec=flask.request.form["fec"]
+    co=flask.request.form["co"]
+    hora=flask.request.form["hora"]
+    archivo=Tarjetas()
+    archivo.leerTarjetas()
+    archivo.avalarTarjetas(fec=fec,co=co,hora=hora)
+    archivo.grabarTarjetas()
+    del archivo
+    flash('La tarjeta avalada por usted, ha sido enviada con exito')
+    return render_template('res_pos_jug_autentic.html')
 
 @app.route('/creating_agenda', methods=["GET","POST"])
 def formturnos():
-    usuario=flask.session["username"]
-    club=flask.session["course"]
-    course=Campos()
-    course.leerCampos()
-    campos=course.buscarCampos(campo=club)
-    campo1=campos[1]
-    largo=len(campos)
-    hoy=date.today()
-    fecha1=hoy+timedelta(days=1)
-    fecha2=hoy+timedelta(days=10)
-    return render_template("menu02ac.html",club=club, campos=campos, largo=largo, fecha1=fecha1, fecha2=fecha2)
+        usuario=flask.session["username"]
+        club=flask.session["course"]
+        course=Campos()
+        course.leerCampos()
+        campos=course.buscarCampos(campo=club)
+        campo1=campos[1]
+        largo=len(campos)
+        hoy=date.today()
+        fecha1=hoy+timedelta(days=1)
+        fecha2=hoy+timedelta(days=10)
+        return render_template("menu02ac.html",club=club, campos=campos, largo=largo, fecha1=fecha1, fecha2=fecha2)
 
 @app.route('/view_agenda_parameters', methods=["GET","POST"])
 def vaparameters(): #Direcciona al administrador del club para que pueda ver agenda de alguno de sus campos
@@ -455,7 +764,7 @@ def clubveragenda(): #El club puede ver la agenda en un día específico
             return render_template("menuac05.html", club=club,campo=campo,fecha=fecha,progclubcampo=progclubcampo)
         else:
             mensajeerror='No existe agenda para el día seleccionado'
-            return render_template("menuac_error05.html", mensajeerror)
+            return render_template("menuac_error05.html", mensajeerror=mensajeerror)
     else:
         return render_template("autenticacion.html")
 
@@ -487,17 +796,14 @@ def clubrealizacambioagenda(): #procedimiento apra grabar los cambios definidos 
         jug03=flask.request.form["jug03"]
         jug04=flask.request.form["jug04"]
         jugadores=[jug01,jug02,jug03,jug04]
-        print(jugadores)
         archivo=Archivo()
         archivo.leerBase()
         mensajeerror=''
         for jugador in jugadores:
-            print('JUGADOR '+jugador)
             if jugador != '':
                 if jugador !='vacio':
                     existejug=archivo.buscarContacto(co=jugador)
                     pr=str(existejug)
-                    print('Existe jugador:'+pr)
                     if existejug=='no':
                         mensajeerror='Solo puede inscribir usuarios registrados en TEE-SHOT, '+jugador+' no está registrado en TEE-SHOT. *** Invítalo a inscribirse ***'
         del archivo
@@ -511,14 +817,10 @@ def clubrealizacambioagenda(): #procedimiento apra grabar los cambios definidos 
             p1[8]=0
             for i in range(4): #actualza jugadores respecto a la solicitud del club y lo que había en la agenda.
                 if jugadores[i]=='':
-                    print('jugador encontrado: '+jugadores[i])
                     jugadores[i]=p1[pjug]
-                    print('jugador en la base: '+p1[pjug])
-                    print('jugador grabado: '+jugadores[i])
                 if jugadores[i]=='vacio':
                     p1[8]=p1[8]+1 #actualiza cuántos cupos quedan
                 pjug=pjug+1
-            print(jugadores)
             if p1[8] > 0:
                 nuevojugadores=[]
                 for jugador in jugadores:
@@ -587,8 +889,6 @@ def clubcreaagendadia():#CREAR DIA Agenda para un campo específico
         fm=frecuencia
         tur=TotalTurnos(hi=hi,mi=mi,fm=fm,hf=hf,mf=mf,txr=txr,desa=desa) # tur=[turnos entre cruces, turnos totales]
         turnos=generahorarios(hi=hi,mi=mi,fm=fm,hf=hf,mf=mf,turnos=tur)  #genera los tunos en hora decimales
-        for turno in turnos:
-            print(turno)
         turnossexa=ConvierteTurnoenHorarios(turnos) #conviertelos turnos decimales en formato horas
         mostrarturnos=InsertaCruces(turnossexa=turnossexa,tur=tur)
         lmt=len(mostrarturnos)
@@ -610,14 +910,6 @@ def clubcreaagendadia():#CREAR DIA Agenda para un campo específico
     else:
         return render_template("autenticacion.html")
 
-@app.route('/administrator_club', methods=["GET","POST"])
-def inicioadclub(): #procedimiento para direccionar al menu inicial del administrador del club
-    return render_template("res_pos_adclu_autentic.html")
-
-@app.route('/players', methods=["GET","POST"])
-def iniciojugadores():#procedimiento para direccionar al menu inicial del jugador
-    return render_template("res_pos_jug_autentic.html")
-
 @app.route('/players/begin/', methods=["GET","POST"])
 def inicioagendajugador():
     archivo=Archivo()
@@ -638,8 +930,6 @@ def rejugrupo(): #revisa la viavilidad de los jugadores para inscribirse
         jug03=flask.request.form["jug03"]
         jug04=flask.request.form["jug04"]
         club=flask.request.form["clu"]
-        print('****************'+ club)
-        print(jug01)
         archivo=Archivo()
         archivo.leerBase()
         error_jugador=''
@@ -700,8 +990,6 @@ def moptjug(): # mostrar opciones para que el jugador defina un turno
         archivo1.leerAgenda()
         consulta1=archivo1.consultaclubcampoAgenda(clu=club,cam=campo,fec=fecha)
         cons=str(consulta1)
-        print('existe agenda: *************'+cons)
-
         if consulta1 == True:
             progclubcampo=archivo1.recuperaclubcampoAgenda(clu=club, cam=campo,fec=fecha)
 
@@ -730,8 +1018,6 @@ def brabagenjugador(): #grabar la opción decidida por el jugador en la agenda d
         p1[8]=int(p1[8]) #cupos
         ljugadores=int(ljugadores) #cuántos voy a inscribir
         if ljugadores <= p1[8]: #si voy a inscribir menos que los cupos disponibles
-            print(ljugadores)
-            print(p1[8])
             inicial=4+(4-(p1[8]))
             final=inicial+(ljugadores)
             j=0
@@ -748,6 +1034,39 @@ def brabagenjugador(): #grabar la opción decidida por el jugador en la agenda d
             return render_template("menu04ju_error.html", mensaje=mensajeerror)
     else:
         return render_template("autenticacion.html")
+
+@app.route('/viewcards', methods=["GET","POS"])
+def selclubtarjetas():#Procedimiento para que el club selccione la fecha que desea ver tarjetas
+    return render_template('menuac08.html')
+
+@app.route('/viewcards/showdatecards',methods=["GET","POST"])
+def vertarjetasclub():
+    cam=flask.session["course"]
+    fecha=flask.request.form["fecha"]
+    fecha=str(fecha)
+    archivo=Archivo()
+    archivo.leerBase()
+    archivo2=Tarjetas()
+    archivo2.iniciarTarjetas()
+    archivo2.leerTarjetas()
+    tarjetas=archivo2.verTarjetas(fec=fecha,cam=cam)
+    listatarjetas=[]
+    for tarjeta in tarjetas:
+        nombre=archivo.datoposContacto(co=tarjeta[1],pos=1)
+        apellido=archivo.datoposContacto(co=tarjeta[1],pos=2)
+        cf=archivo.datoposContacto(co=tarjeta[1],pos=7)
+        card=[nombre,apellido,cf]
+        for i in range(4,22):
+            card.append(tarjeta[i])
+        card.append(tarjeta[1])
+        if tarjeta[23]=='si':
+            card.append(tarjeta[2])
+        else:
+            card.append('')
+        listatarjetas.append(card)
+
+    return render_template('menuac09.html',fecha=fecha,tarjetas=listatarjetas)
+
 
 
 if __name__ == '__main__':  #para mantener activa la página

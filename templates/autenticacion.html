@@ -1,10 +1,12 @@
-{% extends "layout.html" %}
+{% extends "layout_autenticado.html" %}
 
 {% block content%}
 <head>
   <link rel="stylesheet" href="{{url_for('static',filename='CSS/autenticacion.css')}}"/>
 </head>
 <body>
+
+
   <div class="contenedor">
     <div class="login">
       <article class="fondo">
@@ -17,7 +19,7 @@
         <input id="contrasena" name="contrasena" required type="password" value="">
         <input id="submit" name="submit" type="submit" value="Enviar">
         <br>
-        <li><a href="{{url_for('about')}}">Olvidó su contraseña</a></li>
+        <li><a href="{{url_for('olvidocontrasegna')}}">Olvidó su contraseña</a></li>
       </form>}
     </article>
     </div>

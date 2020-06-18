@@ -8,6 +8,18 @@
   <h2> Bienvenida especial para {{session["name"]}} a su sesion en TEE-SHOT como jugador.</h2>
   <br>
 
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alerta">
+        <h2>{{message}}</h2>
+      </div>
+
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
 <!--  <form class="" action="{{url_for('inicioagendajugador')}}" method="post">
     <input type="submit" name="abrir_agenda" value="INSCRIBIRSE_PARA_JUGAR">
   </form>
@@ -24,7 +36,10 @@
 
 <div class="botones">
   <li><a href="{{url_for('inicioagendajugador')}}">INSCRIBIRSE PARA JUGAR</a></li>
-  <li><a href="{{url_for('inicioagendajugador')}}">CONSULTAR Y BORAR TURNOS</a></li>
+<!--  <li><a href="{{url_for('inicioagendajugador')}}">CONSULTAR Y BORRAR TURNOS</a></li>-->
+  <li><a href="{{url_for('tarjetasjugador')}}">TARJETAS PROPIAS DE JUEGO</a></li>
+  <li><a href="{{url_for('tarjetascolega')}}">FIRMAR COMO MARCADOR</a></li>
+
 </div>
 <br><br>
 <li class="enlace"><a href="{{url_for('logout')}}" >Cerrar Sesión</a></li>
