@@ -3,7 +3,7 @@
 <head>
 <!--    <meta charset="UTF-8">
   <title>Formularios con CSS</title>-->
-  <link rel="stylesheet" href="{{url_for('static',filename='CSS/formularios.css')}}"/>
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/ppal.css')}}"/>
 </head>
 <body>
 
@@ -20,6 +20,14 @@
     <br/>
     <p>A continuación seleccione los parámetros para crear agenda en los campos mencionados teniendo en cuenta las descripciones de cada selección que realice:</p>
     <form action="{{url_for('clubcreaagendadia')}}" method="post">
+      <label for=''>Cantiad de de jugadores por grupo:</label>
+      <select class="" name="numjug">
+        <option>1</option>Jugador
+        <option>2</option>Jugadores
+        <option>3</option>Jugadores
+        <option selected>4</option>Jugadores
+
+      </select>
       <p>Tiempo estipulado para una ronda de 9 hoyos en su club</p>
       <label for="">Horas</label>
       <select class="" name="txrh">

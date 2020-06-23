@@ -19,11 +19,11 @@
   padding-left: 50%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 40%;
+  /* align-items: center; */
+  width: 30%;
   height: 100%;
 }
-.fondo{
+.fondo form{
   width: 100%;
   background-color: rgba(31, 141, 166, 0.5);
   margin:0;

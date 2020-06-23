@@ -3,12 +3,12 @@
 <head>
 <!--    <meta charset="UTF-8">
   <title>Formularios con CSS</title>-->
-  <link rel="stylesheet" href="{{url_for('static',filename='CSS/formularios.css')}}"/>
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/ppal.css')}}"/>
 </head>
 <h3>Programación grabada en {{club}} para el día {{f1}}</h3>
 <p>Campos:{% for i in range(1,lcampos)%} {{campos[i]}},{% endfor %}</p>
 <p>Primer turno a las {{h1}} y cierre a la hora {{h2}}. Los turnos cada: {{fr}} minutos. Turnos por campo: {{tur[1]}}.</p>
-<p>Con 4 jugadores por turno, para una capacidad total de {{ 4*(lcampos-1)*tur[1] }} jugadores en el día.</p>
+<p>Con {{numjug}} jugadores por turno, para una capacidad total de {{ numjug*(lcampos-1)*tur[1] }} jugadores en el día.</p>
 <p>Los turnos se han generado así:</p>
 
 <ol class="turnosdia">

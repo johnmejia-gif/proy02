@@ -19,25 +19,14 @@
     {% endif %}
   {% endwith %}
 
-
-<!--  <form class="" action="{{url_for('inicioagendajugador')}}" method="post">
-    <input type="submit" name="abrir_agenda" value="INSCRIBIRSE_PARA_JUGAR">
-  </form>
-<br>
-  <form class="" action="{{url_for('inicioagendajugador')}}" method="post">
-    <input type="submit" name="ver_agenda" value="CONSULTAR_Y_BORAR_TURNOS">
-  </form>
-
-  <br><br><br><br><br><br>
-  <form class="" action="{{url_for('logout')}}" method="post">
-    <input type="submit" name="logout" value="TERMINAR_SESIÓN">
-  </form>-->
-<br><br><br>
+  <br>
+  <br>
+  <br>
 
 <div class="botones">
-  <li><a href="{{url_for('inicioagendajugador')}}">INSCRIBIRSE PARA JUGAR</a></li>
+  <li><a href="{{url_for('inicioagendajugador')}}">PEDIR TURNO</a></li>
 <!--  <li><a href="{{url_for('inicioagendajugador')}}">CONSULTAR Y BORRAR TURNOS</a></li>-->
-  <li><a href="{{url_for('tarjetasjugador')}}">TARJETAS PROPIAS DE JUEGO</a></li>
+  <li><a href="{{url_for('tarjetasjugador')}}">PASAR TARJETA</a></li>
   <li><a href="{{url_for('tarjetascolega')}}">FIRMAR COMO MARCADOR</a></li>
 
 </div>

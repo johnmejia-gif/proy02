@@ -2,12 +2,14 @@
 {% block content%}
 
 <head>
-  <link rel="stylesheet" href="{{url_for('static',filename='CSS/formularios.css')}}"/>
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/ppal.css')}}"/>
 </head>
 
-<p>{{session["name"]}}, aquí puedes adicionar hasta 3 jugadores para conformar tu grupo de juego.</p>
-<p>Los juagdores que coloques deben estar inscritos en TEE-SHOT (invita a tus amigos a inscribirse).</p>
-<p>Por favor colocar usuarios con quien deseas jugar</p>
+<h3>No inscriba más jugadores de los permitidos por el Club en cada grupo</h3>
+<p>{{session["name"]}}, aquí puede adicionar jugadores para conformar su grupo de juego (no exceder el máximo permitido por el club).</p><br>
+
+<p>Los juagdores que coloques deben estar inscritos en TEE-SHOT (¡invite a sus amigos a inscribirse!).</p>
+<p>Por favor colocar usuarios con quien desea jugar</p>
   <br>
 
   <form action="{{url_for('rejugrupo')}}" method="post">

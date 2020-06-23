@@ -2,17 +2,17 @@
 {% block content%}
 
 <head>
-  <link rel="stylesheet" href="{{url_for('static',filename='CSS/formularios.css')}}"/>
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/ppal.css')}}"/>
 </head>
 
-<p>{{jugadores[0]}}</p>
+<!-- <p>{{jugadores[0]}}</p>
 <p>{{jugadores[1]}}</p>
 <p>{{jugadores[2]}}</p>
-<p>{{jugadores[3]}}</p>
+<p>{{jugadores[3]}}</p> -->
 
 
   <form class="" action="{{url_for('moptjug')}}" method="post">
-    <label>Seleccione el campo en le que desea jugar</label>
+    <label>Seleccione el campo en el que desea jugar</label>
     <br>
     <input type="hidden" name="jugadores" value="{{jugadores}}">
     <input type="hidden" name="ljugadores" value="{{ljugadores}}">

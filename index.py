@@ -141,13 +141,20 @@ class Agenda:
         for elemento in self.lista:
             archivo.write(elemento+"\n")
         archivo.close()
-    def adicioncampoAgenda(self,clu,cam,fec,turnos,hi,mi,fm,hf,mf,tac,tt): #crea la agenda en el archivo provisional
+    def adicioncampoAgenda(self,clu,cam,fec,turnos,hi,mi,fm,hf,mf,tac,tt,numjug): #crea la agenda en el archivo provisional
         turnostotal=len(turnos)
         tur=0
-        ju1='vacio'
-        ju2='vacio'
-        ju3='vacio'
-        ju4='vacio'
+        numjug=int(numjug)
+        jugs=[]
+        bloquear= 4 - numjug
+        for i in range (bloquear):
+            jugs.append('club@club.com')
+        for i in range(bloquear,4):
+            jugs.append('vacio')
+        ju1=jugs[0]
+        ju2=jugs[1]
+        ju3=jugs[2]
+        ju4=jugs[3]
         pos0=clu+'&/&'+cam+'&/&'+fec #en la posición 0 de la fila se almacena el club, el campo y la fecha con separador '&/&'
         hi=str(hi)
         mi=str(mi)
@@ -162,7 +169,7 @@ class Agenda:
             hor=str(hor)
             tur=tur+1
             turstr=str(tur)
-            vac='4'
+            vac=str(numjug)
             hoy=date.today()
             hoy=str(hoy)
             user=flask.session["username"]
@@ -310,7 +317,7 @@ class Tarjetas:
                     tarjetas.append(arreglo)
         return tarjetas
 
-def TotalTurnos(hi,mi,fm,hf,mf,txr,desa):#devuelve una lista con [la cantidad de turnos antes del cruce, turnos en total del día]
+def TotalTurnos(hi,mi,fm,hf,mf,txr,desa):#devuelve una lista con [numero de turnos antes del cruce, turnos en total del día]
     hi=int(hi)
     mi=float(mi)
     fm=float(fm)
@@ -436,6 +443,11 @@ contrasenas=['admin']
 
 @app.route('/', methods=["GET", "POST"]) #es como decirle: esta  es la página principal, es la turata p4ra la apgina principal
 def home():
+    flask.session["logged_in"] = False
+    flask.session["name"]=''
+    flask.session["username"]=''
+    flask.session["course"]=''
+    flask.session["tusu"]=''
     return render_template('autenticacion.html')
 
 @app.route('/logout', methods=["GET","POST"])
@@ -851,12 +863,14 @@ def clubrealizacambioagenda(): #procedimiento apra grabar los cambios definidos 
 def clubcreaagendadia():#CREAR DIA Agenda para un campo específico
     if(flask.request.method == "POST"):
         fecha=flask.request.form["fechainicial"]
+        numjug=flask.request.form["numjug"]
         hora_apertura=flask.request.form["hora_apertura"]
         hora_cierre=flask.request.form["hora_cierre"]
         frecuencia=flask.request.form["frecuencia"]
         txrhu=flask.request.form["txrh"] #Horas por ronda
         txrmu=flask.request.form["txrm"] #minutos por ronda
         desau=flask.request.form["desa"] #minutos para desayuno
+        numjug=int(numjug)
         txrhu=int(txrhu)
         txrmu=int(txrmu)
         txr= txrhu + (txrmu/60)
@@ -897,14 +911,14 @@ def clubcreaagendadia():#CREAR DIA Agenda para un campo específico
         archivoagenda=Agenda()
         archivoagenda.iniciarAgenda()
         archivoagenda.leerAgenda()
-        checkagenda=archivoagenda.consultaclubcampoAgenda(clu=clu,cam=cam,fec=fec) #comprueba si esite agenda para ese club,campo y fecha
+        checkagenda=archivoagenda.consultaclubcampoAgenda(clu=clu,cam=cam,fec=fec) #comprueba si existe agenda para ese club,campo y fecha
         if checkagenda == False:
             for i in range(1,len(campos)):
                 archivoprov=Agenda()
                 cam=campos[i]
-                archivoprov.adicioncampoAgenda(clu=clu,cam=cam,fec=fec,turnos=turnossexa,hi=hi,mi=mi,fm=fm,hf=hf,mf=mf,tac=tac,tt=tt)
+                archivoprov.adicioncampoAgenda(clu=clu,cam=cam,fec=fec,turnos=turnossexa,hi=hi,mi=mi,fm=fm,hf=hf,mf=mf,tac=tac,tt=tt,numjug=numjug)
                 archivoprov.escribirAgenda()
-            return render_template("menu03ac.html", f1=fec, h1=hora_apertura, h2=hora_cierre,fr=frecuencia,tur=tur,turnos=mostrarturnos,campos=campos,club=club,lcampos=lcampos,lmt=lmt)
+            return render_template("menu03ac.html", f1=fec, h1=hora_apertura, h2=hora_cierre,fr=frecuencia,tur=tur,turnos=mostrarturnos,campos=campos,club=club,lcampos=lcampos,lmt=lmt,numjug=numjug)
         else:
             return render_template("menu03ac_error.html", f1=fec,club=club,mensajeerror='YA HAY AGENDA PROGRAMADA PARA LA FECHA SELECCIONADA')
     else:
@@ -962,8 +976,9 @@ def rejugrupo(): #revisa la viavilidad de los jugadores para inscribirse
                         error_jugador='No se puede repetir jugador'
             if error_jugador == '':
                 ljugadores=len(jugadores)
-                fecha1=date.today()
-                fecha2=fecha1+timedelta(days=9)
+                fecha0=date.today()
+                fecha1=date.today()+timedelta(days=1)
+                fecha2=fecha0+timedelta(days=2)
                 archivo2=Campos()
                 archivo2.leerCampos()
                 campos=archivo2.buscarCampos(campo=club)
@@ -985,15 +1000,31 @@ def moptjug(): # mostrar opciones para que el jugador defina un turno
         jugadores=flask.request.form["jugadores"]
         ljugadores=flask.request.form["ljugadores"]
         club=flask.request.form["club"]
+        listajugadores=re.findall("[a-zA-Z0-0]\S+@\S+[a-zA-Z]",jugadores)
+        print('********jugadores*********')
+        print(listajugadores)
         archivo1=Agenda()
         archivo1.iniciarAgenda()
         archivo1.leerAgenda()
         consulta1=archivo1.consultaclubcampoAgenda(clu=club,cam=campo,fec=fecha)
         cons=str(consulta1)
         if consulta1 == True:
-            progclubcampo=archivo1.recuperaclubcampoAgenda(clu=club, cam=campo,fec=fecha)
-
-            return render_template("menu03ju.html",fecha=fecha,campo=campo,jugadores=jugadores,ljugadores=ljugadores,club=club,consulta1=consulta1,progclubcampo=progclubcampo)
+            contador=0
+            for jugador in listajugadores:
+                turnosjugador=archivo1.turjugAgenda(usuario=jugador,fecha=fecha)
+                print('*** juagador:')
+                print(jugador)
+                print('**** turno jugador****')
+                print(turnosjugador)
+                if turnosjugador!=[]:
+                    mensajerapido=jugador+' ya tiene turno para la fecha seleccionada'
+                    contador=contador+1
+            if contador==0:
+                progclubcampo=archivo1.recuperaclubcampoAgenda(clu=club, cam=campo,fec=fecha)
+                return render_template("menu03ju.html",fecha=fecha,campo=campo,jugadores=jugadores,ljugadores=ljugadores,club=club,consulta1=consulta1,progclubcampo=progclubcampo)
+            else:
+                flash(mensajerapido)
+                return render_template("res_pos_jug_autentic.html")
         else:
             return render_template("menu03ju_error.html", mensaje="no hay agenda por parte del club para ese día")
     else:
@@ -1028,6 +1059,7 @@ def brabagenjugador(): #grabar la opción decidida por el jugador en la agenda d
             archivo1.cambiaturnoAgenda(p1=p1,club=club,campo=campo,fecha=fecha,tur=tur,ljugadores=ljugadores)
             archivo1.iniciarAgenda()
             archivo1.grabarturnoAgenda()
+            #************ colocar funcion para envío de correos de confirmación
             return render_template("menu04ju.html",fecha=fecha,campo=campo,jugadores=jugadores,ljugadores=ljugadores,club=club,turno_sel=turno_sel,filaagenda=filaagenda)
         else:
             mensajeerror='No hay cupos disponibles en la selección, por favor vuelva escoger un horaio deseado'
